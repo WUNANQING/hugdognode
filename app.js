@@ -8,9 +8,9 @@ const db = require(__dirname + "/_connect_db");
 const session = require("express-session");
 const cors = require("cors");
 //引入router
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-const productsRouter = require("./routes/products");
+const memberRouter = require("./routes/member");
+const productsRouter = require("./routes/ser");
+const serviceUserRouter = require("./routes/serviceUser");
 
 const app = express();
 
@@ -50,9 +50,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //將模組化的路由當成middleware
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/member", memberRouter);
 app.use("/products", productsRouter);
+app.use("/service_user", serviceUserRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
