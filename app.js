@@ -9,7 +9,7 @@ const session = require("express-session");
 const cors = require("cors");
 //引入router
 const memberRouter = require("./routes/member");
-const productsRouter = require("./routes/ser");
+const productsRouter = require("./routes/products");
 const serviceUserRouter = require("./routes/serviceUser");
 
 const app = express();
