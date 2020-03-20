@@ -11,6 +11,7 @@ const cors = require("cors");
 const memberRouter = require("./routes/member");
 const productsRouter = require("./routes/products");
 const serviceUserRouter = require("./routes/serviceUser");
+const marketingMember = require("./routes/marketing_Member");
 
 const app = express();
 
@@ -53,7 +54,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/member", memberRouter);
 app.use("/products", productsRouter);
 app.use("/service_user", serviceUserRouter);
-
+app.use('/marketing_member', marketingMember)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
