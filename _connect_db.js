@@ -3,8 +3,11 @@ const bluebird = require("bluebird");
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
-  database: "pet_db"
+  password: "root",
+  // user: 'qazqaz',
+  // password: 'qazqaz',
+  database: "pet_db",
+  dateStrings: true,
 });
 
 db.connect(err => {
