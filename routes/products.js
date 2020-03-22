@@ -5,7 +5,7 @@ var router = express.Router();
 //商品全部資料
 router.get("/:page?", function(req, res) {
   //設定每頁商品筆數;總筆數;總頁數
-  const perPage = 9;
+  const perPage = 18;
   let totalRows, totalPages;
   let page = req.params.page ? parseInt(req.params.page) : 1;
   //得到總筆數
@@ -16,7 +16,8 @@ router.get("/:page?", function(req, res) {
       totalPages = Math.ceil(totalRows / perPage);
       if (page < 1) page = 1;
       if (page > totalPages) page = totalPages;
-      const sql = `SELECT * FROM \`product\` ORDER BY pId DESC LIMIT  ${(page -
+      //按照商品編號順序DESC為倒序
+      const sql = `SELECT * FROM \`product\` ORDER BY pId ASC LIMIT  ${(page -
         1) *
         perPage}, ${perPage}`;
       return db.queryAsync(sql);
