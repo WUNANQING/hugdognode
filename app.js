@@ -11,6 +11,7 @@ const cors = require("cors");
 const memberRouter = require("./routes/member");
 const productsRouter = require("./routes/products");
 const serviceUserRouter = require("./routes/serviceUser");
+const knowledgeRouter = require("./routes/knowledge");
 const marketingMember = require("./routes/marketing_Member");
 const orderRouter = require("./routes/order");
 
@@ -55,6 +56,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/member", memberRouter);
 app.use("/products", productsRouter);
 app.use("/service_user", serviceUserRouter);
+app.use("/knowledge", knowledgeRouter);
 app.use("/marketing_member", marketingMember);
 app.use("/order", orderRouter);
 
