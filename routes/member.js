@@ -10,16 +10,17 @@ router.get("/", function (req, res) {
 });
 //新增會員資料
 router.post("/insert", function (req, res) {
-  const sql = `INSERT INTO \`member\`(\`mName\`,\`mAccount\`,\`mPassword\`,\`mGender\`,\`mBday\`,\`mPhone\`,\`mEmail\`,\`mAddress\`, \`created_at\`)VALUES(?,?,?,?,?,?,?,?,NOW())`
-  db.queryAsync(sql),[
+  const sql = `INSERT INTO \`member\`(\`mName\`,\`mAccount\`,\`mPassword\`,\`mImg\`,\`mGender\`,\`mBday\`,\`mPhone\`,\`mEmail\`,\`mAddress\`, \`created_at\`, \`updated_at\`)VALUES(?,?,?,?,?,?,?,?,?,NOW(),NOW())`
+  db.queryAsync(sql,[
     req.body.mName,
     req.body.mAccount,
     req.body.mPassword,
+    req.body.mImg,
     req.body.mGender,
     req.body.mday,
     req.body.mPhone,
     req.body.mEmail,
-    req.body.mAddress,]
+    req.body.mAddress,])
   .then(result => {
     return res.json(result);
   })
