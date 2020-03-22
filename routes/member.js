@@ -17,7 +17,7 @@ router.post("/insert", function (req, res) {
     req.body.mPassword,
     req.body.mImg,
     req.body.mGender,
-    req.body.mday,
+    req.body.mBday,
     req.body.mPhone,
     req.body.mEmail,
     req.body.mAddress,])
