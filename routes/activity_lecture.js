@@ -8,5 +8,10 @@ router.get("/", function(req, res) {
     return res.json(result);
   });
 });
-
+router.get("/:LId?", function(req, res) {
+  const sql = "SELECT * FROM activity_lecture WHERE LId = ?";
+  db.queryAsync(sql, [req.params.LId]).then(result => {
+    return res.json(result);
+  });
+});
 module.exports = router;

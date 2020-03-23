@@ -9,4 +9,10 @@ router.get("/", function(req, res) {
   });
 });
 
+router.get("/:cId?", function(req, res) {
+  const sql = "SELECT * FROM activity_class WHERE cId = ?";
+  db.queryAsync(sql, [req.params.cId]).then(result => {
+    return res.json(result);
+  });
+});
 module.exports = router;
