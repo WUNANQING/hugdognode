@@ -15,6 +15,9 @@ const serviceUserRouter = require("./routes/serviceUser");
 const knowledgeRouter = require("./routes/knowledge");
 const marketingMember = require("./routes/marketing_Member");
 const orderRouter = require("./routes/order");
+const activityClassRouter = require("./routes/activity_class");
+const activityLectureRouter = require("./routes/activity_lecture");
+const activitySaleRouter = require("./routes/activity_sale");
 
 const app = express();
 
@@ -61,6 +64,9 @@ app.use("/service_user", serviceUserRouter);
 app.use("/knowledge", knowledgeRouter);
 app.use("/marketing_member", marketingMember);
 app.use("/order", orderRouter);
+app.use("/activity_class", activityClassRouter);
+app.use("/activity_lecture", activityLectureRouter);
+app.use("/activity_sale", activitySaleRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
