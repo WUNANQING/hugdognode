@@ -25,10 +25,10 @@ router.post("/post", (req, res) => {
     });
 });
 //訂單細節資料
-router.get("/:orderId?", function(req, res) {
-  const sql = `SELECT * FROM orders WHERE id = ?`;
-  console.log(req.params.orderId);
-  db.queryAsync(sql, [req.params.orderId]).then(result => {
+router.get("/:mId?", function(req, res) {
+  const sql = `SELECT * FROM orders WHERE mId = ? ORDER BY id DESC LIMIT 1`;
+  console.log(req.params.mId);
+  db.queryAsync(sql, [req.params.mId]).then(result => {
     return res.json(result);
   });
 });
