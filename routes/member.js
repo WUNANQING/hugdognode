@@ -28,4 +28,10 @@ router.post("/insert", function (req, res) {
     console.log(err)
 });
 });
+// router.get("/order", function (req, res) {
+//   const sql = "SELECT * FROM orders";
+//   db.queryAsync(sql).then(result => {
+//     return res.json(result);
+//   });
+// });
 module.exports = router;
