@@ -9,6 +9,7 @@ const session = require("express-session");
 const cors = require("cors");
 //引入router
 const memberRouter = require("./routes/member");
+const memberOrderRouter = require("./routes/memberOrder");
 const productsRouter = require("./routes/products");
 const serviceUserRouter = require("./routes/serviceUser");
 const knowledgeRouter = require("./routes/knowledge");
@@ -54,6 +55,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //將模組化的路由當成middleware
 app.use("/member", memberRouter);
+app.use("/member/order", memberOrderRouter);
 app.use("/products", productsRouter);
 app.use("/service_user", serviceUserRouter);
 app.use("/knowledge", knowledgeRouter);
