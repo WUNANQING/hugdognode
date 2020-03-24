@@ -1,10 +1,17 @@
 var express = require("express");
 const db = require(__dirname + "/../_connect_db");
 var router = express.Router();
-//查詢會員資料
+//查詢狗狗資料
 router.get("/", function (req, res) {
-  const sql = "SELECT * FROMddog";
+  const sql = "SELECT * FROM dog";
   db.queryAsync(sql).then(result => {
+    return res.json(result);
+  });
+});
+//查詢狗狗主人
+router.get("/:mId?", function (req, res) {
+  const sql = "SELECT * FROM dog WHERE mId = ?";
+  db.queryAsync(sql, [req.params.mId]).then(result => {
     return res.json(result);
   });
 });
