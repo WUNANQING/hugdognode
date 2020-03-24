@@ -8,6 +8,62 @@ router.get("/:page?", function(req, res) {
   const perPage = 18;
   let totalRows, totalPages;
   let page = req.params.page ? parseInt(req.params.page) : 1;
+
+  const whereAr = [];
+
+  const cId = parseInt(req.query.cId);
+  if (req.query.cId && cId) {
+    whereAr.push("pCategoryId=" + cId);
+  }
+
+  const vId = parseInt(req.query.vId);
+  if (req.query.vId && vId) {
+    whereAr.push("vId=" + vId);
+  }
+
+  let whereStr = "";
+  if (whereAr.length) {
+    whereStr = " WHERE " + whereAr.join(" AND ");
+  }
+
+  let orderBy = "";
+  switch (req.query.orderBy) {
+    case "timeAsc":
+      orderBy = " ORDER BY created_at ASC ";
+      break;
+    case "timeDesc":
+      orderBy = " ORDER BY created_at DESC ";
+      break;
+    case "priceAsc":
+      orderBy = " ORDER BY pPrice ASC ";
+      break;
+    case "priceDesc":
+      orderBy = " ORDER BY pPrice DESC ";
+      break;
+    default:
+      //orderBy = ' ORDER BY created_at ASC ';
+      break;
+  }
+
+  const t_sql = ` SELECT COUNT(1) num FROM product ${whereStr} `;
+  const p_sql = ` SELECT * FROM product ${whereStr} ${orderBy} LIMIT ${(page -
+    1) *
+    perPage}, ${perPage} `;
+
+  db.queryAsync(t_sql)
+    .then(result => {
+      totalRows = result[0].num;
+      totalPages = Math.ceil(totalRows / perPage);
+      if (page < 1) page = 1;
+      if (page > totalPages) page = totalPages;
+
+      return db.queryAsync(p_sql);
+    })
+    //node使用ejs不需要return但此處為前後端連接因此需要return
+    .then(result => {
+      return res.json({ totalRows, totalPages, page, rows: result });
+    });
+  /*
   //得到總筆數
   const t_sql = "SELECT COUNT(*) num FROM product";
   //得到特定商品類別筆數
@@ -64,6 +120,8 @@ router.get("/:page?", function(req, res) {
         return res.json({ totalRows, totalPages, page, rows: result });
       });
   }
+
+  */
 });
 
 //商品細節資料
