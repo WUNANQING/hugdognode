@@ -14,7 +14,7 @@ router.get("/:page?", function(req, res) {
   const c_sql = `SELECT COUNT(*) num FROM product where pCategoryId = ?`;
   //得到特定商品品牌比數
   const v_sql = `SELECT COUNT(*) num FROM product where vId = ?`;
-  //設定判斷式
+  //設定判斷式;若得到商品種類cId
   if (req.query.cId) {
     db.queryAsync(c_sql, [req.query.cId])
       .then(result => {
@@ -22,7 +22,7 @@ router.get("/:page?", function(req, res) {
         totalPages = Math.ceil(totalRows / perPage);
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
-        //按照商品編號順序DESC為倒序
+        //按照商品編號順序,DESC為倒序
         const sql = `SELECT * FROM \`product\` where pCategoryId = ? ORDER BY pId ASC LIMIT  ${(page -
           1) *
           perPage}, ${perPage}`;
@@ -32,6 +32,7 @@ router.get("/:page?", function(req, res) {
       .then(result => {
         return res.json({ totalRows, totalPages, page, rows: result });
       });
+      //若得到商品品牌vId
   } else if (req.query.vId) {
     db.queryAsync(v_sql, [req.query.vId])
       .then(result => {
@@ -39,13 +40,11 @@ router.get("/:page?", function(req, res) {
         totalPages = Math.ceil(totalRows / perPage);
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
-        //按照商品編號順序DESC為倒序
         const sql = `SELECT * FROM \`product\` where vId = ? ORDER BY pId ASC LIMIT  ${(page -
           1) *
           perPage}, ${perPage}`;
         return db.queryAsync(sql, [req.query.vId]);
       })
-      //node使用ejs不需要return但此處為前後端連接因此需要return
       .then(result => {
         return res.json({ totalRows, totalPages, page, rows: result });
       });
@@ -56,13 +55,11 @@ router.get("/:page?", function(req, res) {
         totalPages = Math.ceil(totalRows / perPage);
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
-        //按照商品編號順序DESC為倒序
         const sql = `SELECT * FROM \`product\` ORDER BY pId ASC LIMIT  ${(page -
           1) *
           perPage}, ${perPage}`;
         return db.queryAsync(sql);
       })
-      //node使用ejs不需要return但此處為前後端連接因此需要return
       .then(result => {
         return res.json({ totalRows, totalPages, page, rows: result });
       });
