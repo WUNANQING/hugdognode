@@ -3,14 +3,14 @@ const db = require(__dirname + "/../_connect_db");
 var router = express.Router();
 
 router.post("/insert", function (req, res) {
-  const sql = `INSERT INTO \`marketing_member\`(\`mId\`,\`mName\`,\`mtId\`,\`mtName\`,\`used\`,\`timeget\`,\`endtime\`, \`created_at\`, \`updated_at\`)VALUES(?,?,?,?,0,?,?,NOW(),NOW())`
+  const sql = `INSERT INTO \`marketing_member\`(\`mId\`,\`mName\`,\`mtId\`,\`mtName\`,\`used\`,\`timeget\`,\`endtime\`,\`verify\`, \`created_at\`, \`updated_at\`)VALUES(?,?,?,?,0,NOW(),?,?,NOW(),NOW())`
   db.queryAsync(sql,[
-    req.body.mId,
-    req.body.mName,
-    req.body.mtId,
-    req.body.mtName,
-    req.body.timeget,
+    req.body.userId,
+    req.body.username,
+    req.body.marketingId,
+    req.body.marketingName,
     req.body.endtime,
+    req.body.verify,
 ])
   .then(result => {
     return res.json(result);
@@ -18,6 +18,11 @@ router.post("/insert", function (req, res) {
   .catch(err=>{
     console.log(err)
 });
+});
+router.get("/couponverify/:verify", function (req, res) {
+  const sql = "SELECT * FROM marketing_member WHERE verify = ?";
+  console.log(req.params.verify)
+  db.queryAsync(sql,[req.params.verify]).then(result=>{return res.json(result)})
 });
 router.get("/mmId/:mmId", function (req, res) {
   const sql = "SELECT * FROM marketing_member WHERE mmId = ?";
@@ -28,6 +33,11 @@ router.get("/used/:used", function (req, res) {
   const sql = "SELECT * FROM marketing_member WHERE used = ?";
   console.log(req.params.used)
   db.queryAsync(sql,[req.params.used]).then(result=>{return res.json(result)})
+});
+router.get("/code/:code", function (req, res) {
+  const sql = "SELECT * FROM marketing_type WHERE code = ?";
+  console.log(req.params.code)
+  db.queryAsync(sql,[req.params.code]).then(result=>{return res.json(result)})
 });
 router.get("/", function (req, res) {
   const sql = "SELECT * FROM marketing_member";

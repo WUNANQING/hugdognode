@@ -1,11 +1,14 @@
 const mysql = require("mysql");
 const bluebird = require("bluebird");
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  // user: 'qazqaz',
-  // password: 'qazqaz',
+  host: "192.168.23.45",
+  // host:'localhost',
+  // user: "root",
+  // password: "root",
+  // user: 'asdasd',
+  // password: 'asdasd',
+  user: 'test',
+  password: '284t;61l vul3t;6',
   database: "pet_db",
   dateStrings: true,
 });
