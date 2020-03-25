@@ -14,10 +14,10 @@ router.get("/blog", function(req, res){
     })
 })
 //進階資料
-router.get("/blog/:aTitle?", function(req, res){
-    const sql =`SELECT * FROM knowledge_blogs WHERE aTitle = ?`
-    console.log(req.params.aTitle)
-    db.queryAsync(sql, [req.params.aTitle]).then(result=>{return res.json(result)})
+router.get("/blog/:aId?", function(req, res){
+    const sql =`SELECT * FROM knowledge_blogs WHERE aId = ?`
+    console.log(req.params.aId)
+    db.queryAsync(sql, [req.params.aId]).then(result=>{return res.json(result)})
 })
 
 
@@ -38,7 +38,7 @@ router.get("/partner/:pId?", function(req, res){
 
 //question資料
 router.get("/question", function(req, res){
-    const sql = `SELECT * FROM knowledge_questions DESC`;
+    const sql = `SELECT * FROM knowledge_questions ORDER BY qId DESC`;
     db.queryAsync(sql).then(result =>{
         return res.json(result);
     })
