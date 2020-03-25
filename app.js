@@ -12,15 +12,20 @@ const memberRouter = require("./routes/member");
 const memberOrderRouter = require("./routes/memberOrder");
 const dogRouter = require("./routes/dog");
 const productsRouter = require("./routes/products");
-const serviceUserRouter = require("./routes/serviceUser");
+//-----service-----
+const serviceRouter = require("./routes/service");
+const serviceAvatarRouter = require("./routes/serviceAvatar");
+const serviceAlbumRouter = require("./routes/serviceAlbum");
+//-----------------
 const knowledgeRouter = require("./routes/knowledge");
 const marketingMember = require("./routes/marketing_Member");
 const orderRouter = require("./routes/order");
 const activityClassRouter = require("./routes/activity_class");
 const activityLectureRouter = require("./routes/activity_lecture");
 const activitySaleRouter = require("./routes/activity_sale");
-const listRouter =require('./routes/list')
-
+const activityCollectionRouter = require("./routes/activity_collection");
+const activitySuccessEventRouter = require("./routes/activity_successEvent");
+const listRouter = require("./routes/list");
 
 const app = express();
 
@@ -64,14 +69,20 @@ app.use("/member", memberRouter);
 app.use("/member/order", memberOrderRouter);
 app.use("/dog", dogRouter);
 app.use("/products", productsRouter);
-app.use("/service_user", serviceUserRouter);
+//-----service-----
+app.use("/service", serviceRouter);
+app.use("/serviceAvatar", serviceAvatarRouter);
+app.use("/serviceAlbum", serviceAlbumRouter);
+//-----------------
 app.use("/knowledge", knowledgeRouter);
 app.use("/marketing_member", marketingMember);
 app.use("/order", orderRouter);
 app.use("/activity_class", activityClassRouter);
 app.use("/activity_lecture", activityLectureRouter);
 app.use("/activity_sale", activitySaleRouter);
-app.use('/list',listRouter);
+app.use("/activity_collection", activityCollectionRouter);
+app.use("/activity_successEvent", activitySuccessEventRouter);
+app.use("/list", listRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
