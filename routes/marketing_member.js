@@ -46,12 +46,18 @@ router.get("/used/:used", function (req, res) {
   console.log(req.params.used)
   db.queryAsync(sql,[req.params.used]).then(result=>{return res.json(result)})
 });
-
+router.get("/code/all", function (req, res) {
+  const sql = "SELECT * FROM marketing_type";
+  db.queryAsync(sql).then(result=>
+    {return res.json(result)
+    });
+});
 router.get("/code/:code", function (req, res) {
   const sql = "SELECT * FROM marketing_type WHERE code = ?";
   console.log(req.params.code)
   db.queryAsync(sql,[req.params.code]).then(result=>{return res.json(result)})
 });
+
 router.get("/", function (req, res) {
   const sql = "SELECT * FROM marketing_member";
   db.queryAsync(sql).then(result => {
