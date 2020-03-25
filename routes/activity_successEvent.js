@@ -9,9 +9,9 @@ router.get("/", function(req, res) {
   });
 });
 
-//收藏課程
+//報名講座，課程
 router.post("/insertSuccessEvent", function(req, res) {
-  const sql = `INSERT INTO \`activity_successEvent\`(\`mId\`,\`eId\`,\`eName\`,\`eDate\`,\`ePeople\`,)VALUES(?,?,?,?,?)`;
+  const sql = `INSERT INTO \`activity_successEvent\`(\`mId\`,\`eId\`,\`eName\`,\`eDate\`,\`ePeople\`)VALUES(?,?,?,?,?)`;
   db.queryAsync(sql, [
     req.body.mId,
     req.body.eId,
