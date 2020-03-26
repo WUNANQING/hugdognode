@@ -1,6 +1,6 @@
 var express = require("express");
 const db = require(__dirname + "/../_connect_db");
-const url = require("url");
+const moment = require("moment-timezone");
 var router = express.Router();
 //商品全部資料
 router.get("/:page?", function(req, res) {
@@ -61,6 +61,7 @@ router.get("/:page?", function(req, res) {
     })
     //node使用ejs不需要return但此處為前後端連接因此需要return
     .then(result => {
+      result.forEach((row,idx)=>{row.created_at=moment(row.created_at).format("YYYY-MM-DD")});
       return res.json({ totalRows, totalPages, page, rows: result });
     });
   /*

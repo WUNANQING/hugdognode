@@ -23,6 +23,9 @@ const orderRouter = require("./routes/order");
 const activityClassRouter = require("./routes/activity_class");
 const activityLectureRouter = require("./routes/activity_lecture");
 const activitySaleRouter = require("./routes/activity_sale");
+const activityCollectionRouter = require("./routes/activity_collection");
+const activitySuccessEventRouter = require("./routes/activity_successEvent");
+const activityQuerySearchRouter = require("./routes/activity_querySearch");
 const listRouter = require("./routes/list");
 
 const app = express();
@@ -78,6 +81,9 @@ app.use("/order", orderRouter);
 app.use("/activity_class", activityClassRouter);
 app.use("/activity_lecture", activityLectureRouter);
 app.use("/activity_sale", activitySaleRouter);
+app.use("/activity_collection", activityCollectionRouter);
+app.use("/activity_successEvent", activitySuccessEventRouter);
+app.use("/activity_querySearch", activityQuerySearchRouter);
 app.use("/list", listRouter);
 
 // catch 404 and forward to error handler
