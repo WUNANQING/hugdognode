@@ -25,14 +25,14 @@ const dbQuery = (sql, res, sqlParam) => {
 //上傳檔案設定
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, "upload/service/avatar");
+    cb(null, "public/uploads/service/avatar");
   },
   filename: function(req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   }
 });
 var upload = multer({ storage: storage }).single("file");
-router.post("/avatar/:sId", function(req, res) {
+router.post("/avatar/:mId", function(req, res) {
   upload(req, res, function(err) {
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err);
@@ -41,13 +41,13 @@ router.post("/avatar/:sId", function(req, res) {
     }
     // console.log(res);
     //查詢舊的檔案
-    let query = `SELECT * FROM service_photo WHERE sId=${req.params.sId} AND category='1'`;
+    let query = `SELECT * FROM service_photo WHERE mId=${req.params.mId} AND category='1'`;
     db.queryAsync(query).then(r => {
       //刪除檔案
       r.forEach(v => {
         fs.unlink(
           __dirname +
-            "/../upload/service/avatar/" +
+            "/../public/uploads/service/avatar/" +
             v.fileName +
             "." +
             v.fileType,
@@ -58,12 +58,16 @@ router.post("/avatar/:sId", function(req, res) {
       });
     });
     //刪除原有資料
-    let del = `DELETE FROM service_photo WHERE sId=${req.params.sId} AND category='1'`;
+    let del = `DELETE FROM service_photo WHERE mId=${req.params.mId} AND category='1'`;
     db.queryAsync(del);
+    //使用智者驗證通過
+    const upd = `UPDATE \`service_user\` SET \`isConfirmed\`=? WHERE \`id\`=?`;
+    const updSqlParam = ["Y", req.params.mId];
+    db.queryAsync(upd, updSqlParam);
     //新增照片
-    let ins = `INSERT INTO \`service_photo\` (\`sId\`,\`category\`, \`fileName\`, \`fileType\`) VALUES (?,?,?,?)`;
+    let ins = `INSERT INTO \`service_photo\` (\`mId\`,\`category\`, \`fileName\`, \`fileType\`) VALUES (?,?,?,?)`;
     let file = `${req.file.filename}`.toString().split(".");
-    const sqlParam = [req.params.sId, "1", file[0], file[file.length - 1]];
+    const sqlParam = [req.params.mId, "1", file[0], file[file.length - 1]];
     return dbQuery(ins, res, sqlParam);
     // return res.status(200).send(req.file);
   });
