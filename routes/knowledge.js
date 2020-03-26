@@ -6,7 +6,7 @@ var router = express.Router();
 
 //blog資料
 router.get("/blog", function(req, res){
-    const sql = `SELECT * FROM knowledge_blogs LIMIT 5 `;
+    const sql = `SELECT * FROM knowledge_blogs `;
     
     db.queryAsync(sql).then(result =>{
         console.log(result)
