@@ -8,10 +8,18 @@ router.get("/", function (req, res) {
     return res.json(result);
   });
 });
+//查詢會員資料
+router.get("/:mId?", function (req, res) {
+  const sql = "SELECT * FROM member where mId=?";
+  db.queryAsync(sql,req.params.mId).then(result=>{
+    return res.json(result)
+  })
+});
 //修改會員資料
 router.post("/update/:mId?", function (req, res) {
   const sql = `UPDATE \`member\` SET \`mName\`=?,\`mAccount\`=?,\`mPassword\`=?,\`mImg\`=?,\`mGender\`=?,\`mBday\`=?,\`mPhone\`=?,\`mEmail\`=?,\`mAddress\`=?,\`updated_at\`=NOW() WHERE \`mId\` = ?`
   db.queryAsync(sql,[
+    
     req.body.mName,
     req.body.mAccount,
     req.body.mPassword,
@@ -20,7 +28,8 @@ router.post("/update/:mId?", function (req, res) {
     req.body.mBday,
     req.body.mPhone,
     req.body.mEmail,
-    req.body.mAddress
+    req.body.mAddress,
+    req.body.mId
   ]).then(result => {
     return res.json(result);
   });
@@ -113,7 +122,7 @@ router.get("/Sorder/:mId?", function(req, res){
 })
 //查看會員收藏清單
 router.get("/list/:mId?",(req,res)=>{
-  const sql=`SELECT list.id AS 'LId',product.pName AS 'pName',product.pInfo AS 'pInfo',product.pPrice AS 'pPrice',product.pImg AS 'pImg' FROM list INNER JOIN product ON list.id = product.pId WHERE mId = ? ORDER BY id DESC`
+  const sql=`SELECT list.id AS 'LId',product.pName AS 'pName',product.pId AS 'pId',product.pInfo AS 'pInfo',product.pPrice AS 'pPrice',product.pImg AS 'pImg' FROM list INNER JOIN product ON list.id = product.pId WHERE mId = ? ORDER BY id DESC`
   db.queryAsync(sql,req.params.mId).then(result=>{
     return res.json(result)
   })

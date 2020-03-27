@@ -9,7 +9,12 @@ router.get("/", function(req, res) {
     return res.json(result);
   });
 });
-
+//收藏mId
+router.get("/:mId?", function(req, res) {
+  const sql = "SELECT * FROM activity_collection WHERE mId = ?";
+  console.log(req.params.mId)
+  db.queryAsync(sql, [req.params.mId]).then(result=>{return res.json(result)})
+})
 //收藏課程
 router.post("/insertCollect", function(req, res) {
   const sql = `INSERT INTO \`activity_collection\`(\`mId\`,\`oId\`,\`oName\`,\`oDate\`)VALUES(?,?,?,?)`;
