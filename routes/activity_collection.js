@@ -11,9 +11,14 @@ router.get("/", function(req, res) {
 });
 
 //收藏課程
-router.post("/insertClass", function(req, res) {
-  const sql = `INSERT INTO \`activity_collection\`(\`mId\`,\`cId\`)VALUES(?,?)`;
-  db.queryAsync(sql, [req.body.mId, req.body.cId])
+router.post("/insertCollect", function(req, res) {
+  const sql = `INSERT INTO \`activity_collection\`(\`mId\`,\`oId\`,\`oName\`,\`oDate\`)VALUES(?,?,?,?)`;
+  db.queryAsync(sql, [
+    req.body.mId,
+    req.body.oId,
+    req.body.oName,
+    req.body.oDate
+  ])
     .then(result => {
       return res.json(result);
     })
@@ -24,8 +29,13 @@ router.post("/insertClass", function(req, res) {
 
 //收藏講座
 router.post("/insertLecture", function(req, res) {
-  const sql = `INSERT INTO \`activity_collection\`(\`mId\`,\`LId\`)VALUES(?,?)`;
-  db.queryAsync(sql, [req.body.mId, req.body.LId])
+  const sql = `INSERT INTO \`activity_collection\`(\`mId\`,\`oId\`,\`oName\`,\`oDate\`)VALUES(?,?,?,?)`;
+  db.queryAsync(sql, [
+    req.body.mId,
+    req.body.oId,
+    req.body.oName,
+    req.body.oDate
+  ])
     .then(result => {
       return res.json(result);
     })
