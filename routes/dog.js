@@ -34,4 +34,21 @@ router.post("/insert", function (req, res) {
     console.log(err)
 });
 });
+//修改狗狗資料
+router.post("/update/:dId?", function (req, res) {
+  const sql = `UPDATE \`dog\` SET \`dName\`=?,\`dImg\`=?,\`dGender\`=?,\`dYear\`=?,\`dMonth\`=?,\`dWeight\`=?,\`dInfo\`=?,\`updated_at\`=NOW() WHERE \`dId\` = ?`
+  db.queryAsync(sql,[
+    
+    req.body.dName,
+    req.body.dImg,
+    req.body.dGender,
+    req.body.dYear,
+    req.body.dMonth,
+    req.body.dWeight,
+    req.body.dInfo,
+    req.body.dId
+  ]).then(result => {
+    return res.json(result);
+  });
+});
 module.exports = router;
