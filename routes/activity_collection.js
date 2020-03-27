@@ -43,4 +43,19 @@ router.post("/insertLecture", function(req, res) {
       console.log(err);
     });
 });
+
+//DELETE FROM `activity_collection` WHERE `mId`='5' AND`oId`= 'c002'
+
+//取消收藏
+router.post("/deleteCollect", function(req, res) {
+  const sql = `DELETE FROM \`activity_collection\`WHERE \`mId\`= ? AND \`oId\`= ?`;
+  db.queryAsync(sql, [req.body.mId, req.body.oId])
+    .then(result => {
+      return res.json(result);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 module.exports = router;
