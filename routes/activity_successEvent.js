@@ -8,7 +8,12 @@ router.get("/", function(req, res) {
     return res.json(result);
   });
 });
-
+//mId查詢
+router.get("/:mId?", function(req, res){
+  const sql =`SELECT * FROM activity_successEvent WHERE mId = ?`
+  console.log(req.params.mId)
+  db.queryAsync(sql, [req.params.mId]).then(result=>{return res.json(result)})
+})
 //報名講座，課程
 router.post("/insertSuccessEvent", function(req, res) {
   const sql = `INSERT INTO \`activity_successEvent\`(\`mId\`,\`eId\`,\`eName\`,\`eDate\`,\`ePeople\`)VALUES(?,?,?,?,?)`;
