@@ -13,7 +13,7 @@ router.post("/post", (req, res) => {
     req.body.mobile,
     req.body.card,
     req.body.cardNumber,
-    req.body.owner,
+    req.body.owner,  
     req.body.cart,
     req.body.mId
   ])

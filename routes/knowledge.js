@@ -38,7 +38,7 @@ router.get("/partner/:pId?", function(req, res){
 
 //question資料
 router.get("/question", function(req, res){
-    const sql = `SELECT * FROM knowledge_questions ORDER BY qId DESC`;
+    const sql = `SELECT * FROM knowledge_questions ORDER BY id DESC`;
     db.queryAsync(sql).then(result =>{
         return res.json(result);
     })
@@ -71,7 +71,8 @@ router.post("/question/ask", (req, res)=>{
         result:{}
       }
 
-    const sql = `INSERT INTO \`knowledge_questions\` (\`mId\`, \`mName\`, \`qAge\`, \`qTitle\`, \`qClassify\`, \`qType\`, \`qDes\`, \`created_at\) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`;
+      console.log(req.body)
+    const sql = `INSERT INTO \`knowledge_questions\` (\`mId\`, \`mName\`, \`qAge\`, \`qTitle\`, \`qClassify\`, \`qType\`, \`qDes\`, \`created_at\`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`;
     db.queryAsync(sql, [
         req.body.mId,
         req.body.mName,
