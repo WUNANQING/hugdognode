@@ -7,7 +7,7 @@ router.get("/:pId", (req, res) => {
   let likes, dislikes;
   const l_sql = `SELECT COUNT(*) likes FROM product_comment WHERE rating = 1`;
   const d_sql = `SELECT COUNT(*) dislikes FROM product_comment WHERE rating = 0`;
-  const sql = `SELECT member.mAccount, product_comment.rating, product_comment.comment, product_comment.created_at FROM product_comment INNER JOIN member ON product_comment.mId = member.mId WHERE pId = ?`;
+  const sql = `SELECT member.mAccount, member.mImg, member.mId, product_comment.rating, product_comment.comment, product_comment.updated_at FROM product_comment INNER JOIN member ON product_comment.mId = member.mId WHERE pId = ?`;
 
   db.queryAsync(l_sql)
     .then(result => {
