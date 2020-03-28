@@ -4,6 +4,7 @@ var router = express.Router();
 
 //新增訂單
 router.post("/post", (req, res) => {
+  console.log(req.body);
   const sql = `INSERT INTO \`orders\`(\`name\`, \`address\`, \`zip\`, \`email\`, \`mobile\`, \`card\`, \`cardNumber\`, \`owner\`, \`cart\`, \`created_at\`, \`mId\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)`;
   db.queryAsync(sql, [
     req.body.lastName + req.body.firstName,
@@ -13,7 +14,7 @@ router.post("/post", (req, res) => {
     req.body.mobile,
     req.body.card,
     req.body.cardNumber,
-    req.body.owner,  
+    req.body.owner,
     req.body.cart,
     req.body.mId
   ])
