@@ -99,7 +99,7 @@ router.get("/query/:page", (req, res) => {
 // -----service_user-----
 //新增資料
 router.post("/user/insert/:userId", upload.none(), (req, res) => {
-  const sql = `INSERT INTO \`service_user\` (\`mId\`,\`sName\`, \`sPhone\`, \`sEmail\`, \`sCity\`, \`sDist\`, \`sAddr\`, \`sTitle\`, \`sYear\`, \`sInfo\`, \`sTypePrice\`, \`sSizeId\`, \`sExtra\`,\`lat\`,\`lng\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  const sql = `INSERT INTO \`service_user\` (\`mId\`,\`sName\`, \`sPhone\`, \`sEmail\`, \`sCity\`, \`sDist\`, \`sAddr\`, \`sTitle\`, \`sYear\`, \`sInfo\`, \`sTypePrice\`, \`sSizeId\`, \`sExtra\`, \`isConfirmed\`,\`lat\`,\`lng\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   const sqlParam = [
     req.params.userId,
     req.body.sName,
@@ -114,6 +114,7 @@ router.post("/user/insert/:userId", upload.none(), (req, res) => {
     req.body.sTypePrice,
     req.body.sSizeId,
     req.body.sExtra,
+    req.body.isConfirmed,
     req.body.lat,
     req.body.lng
   ];
@@ -300,7 +301,7 @@ router.get("/zipcode/city/:city", (req, res, next) => {
 });
 //-----查會員資訊-----
 router.get("/member", (req, res, next) => {
-  let sql = `SELECT \`mId\`,\`mName\`,\`mImg\` FROM member`;
+  let sql = `SELECT \`mId\`,\`mName\`,\`mImg\`,\`mPhone\`,\`mEmail\` FROM member`;
   if (req.query.mId) {
     sql += ` WHERE \`mId\`=${req.query.mId}`;
   }
