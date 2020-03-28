@@ -23,7 +23,7 @@ router.get("/blog/:aId?", function(req, res){
 
 //partner資料
 router.get("/partner", function(req, res){
-    const sql = `SELECT * FROM knowledge_partners`;
+    const sql = `SELECT * FROM knowledge_partners ORDER BY id DESC`;
     db.queryAsync(sql).then(result =>{
         return res.json(result);
     })
@@ -71,7 +71,8 @@ router.post("/question/ask", (req, res)=>{
         result:{}
       }
 
-      console.log(req.body)
+    //   console.log(req.body)
+
     const sql = `INSERT INTO \`knowledge_questions\` (\`mId\`, \`mName\`, \`qAge\`, \`qTitle\`, \`qClassify\`, \`qType\`, \`qDes\`, \`created_at\`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`;
     db.queryAsync(sql, [
         req.body.mId,
@@ -92,6 +93,39 @@ router.post("/question/ask", (req, res)=>{
           return res.json(output);
       })
 });
+
+//partner發起活動
+router.post("/partner/open", (req, res)=>{
+    const output={
+        success:false,
+        result:{}
+      }
+
+      console.log(req.body)
+
+    const sql = `INSERT INTO \`knowledge_partners\` (\`mId\`, \`mName\`, \`pTitle\`, \`pDate\`, \`pTime\`, \`pLocation\`, \`pNumber\`, \`pNumberLimit\`, \`pDes\`, \`created_at\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
+    db.queryAsync(sql, [
+        req.body.mId,
+        req.body.mName,
+        req.body.pTitle,
+        req.body.pDate,
+        req.body.pTime,
+        req.body.pLocation, 
+        req.body.pNumber, 
+        req.body.pNumberLimit,
+        req.body.pDes   
+      ])
+      .then(p=>{
+          output.success=true;
+          output.result=p
+          return res.json(output);
+      })
+      .catch(error=>{
+          console.log(error);
+          return res.json(output);
+      })
+});
+
 
 
 
