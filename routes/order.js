@@ -33,4 +33,11 @@ router.get("/:mId?", function(req, res) {
     return res.json(result);
   });
 });
+//更新優惠券使用狀態
+router.post("/updateCoupon/:mmId/:mId", function(req, res) {
+  const sql = `UPDATE marketing_member SET used = 1 WHERE mmId = ? AND mId =? `;
+  db.queryAsync(sql, [req.params.mmId, req.params.mId]).then(result => {
+    return res.json(result);
+  });
+});
 module.exports = router;
