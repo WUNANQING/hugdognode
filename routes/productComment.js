@@ -5,14 +5,14 @@ var router = express.Router();
 //顯示評論
 router.get("/:pId", (req, res) => {
   let likes, dislikes;
-  const l_sql = `SELECT COUNT(*) likes FROM product_comment WHERE rating = 1`;
-  const d_sql = `SELECT COUNT(*) dislikes FROM product_comment WHERE rating = 0`;
+  const l_sql = `SELECT COUNT(*) likes FROM product_comment WHERE rating = 1 AND pId = ?`;
+  const d_sql = `SELECT COUNT(*) dislikes FROM product_comment WHERE rating = 0 AND pId = ?`;
   const sql = `SELECT member.mAccount, member.mImg, member.mId, product_comment.rating, product_comment.comment, product_comment.updated_at FROM product_comment INNER JOIN member ON product_comment.mId = member.mId WHERE pId = ?`;
 
-  db.queryAsync(l_sql)
+  db.queryAsync(l_sql,[req.params.pId])
     .then(result => {
       likes = result[0].likes;
-      return db.queryAsync(d_sql);
+      return db.queryAsync(d_sql,[req.params.pId]);
     })
     .then(result => {
       dislikes = result[0].dislikes;
