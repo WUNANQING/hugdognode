@@ -180,6 +180,12 @@ router.get("/order/:userId", (req, res) => {
   console.log(sql);
   dbQuery(sql, res);
 });
+//列表查詢
+router.get("/order/sPrice/:userId", (req, res) => {
+  let sql = `SELECT sPrice FROM service_order  WHERE sId='${req.params.userId}' AND orderStsId<>'o01' AND orderStsId<>'o02'`;
+  console.log(sql);
+  dbQuery(sql, res);
+});
 //新增訂單
 router.post("/order/insert/:userId", upload.none(), (req, res) => {
   const sql = `INSERT INTO \`service_order\` (\`orderId\`,\`sId\`, \`orderStsId\`, \`mId\`, \`mAddr\`, \`mCity\`, \`mDist\`, \`mPhone\`, \`sTypeId\`, \`sPrice\`, \`sTimeStart\`, \`sTimeEnd\`, \`dName\`, \`dBreed\`, \`dAge\`, \`dGender\`, \`sizeId\`, \`extraId\`, \`sRemark\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
