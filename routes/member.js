@@ -128,4 +128,28 @@ router.get("/list/:mId?",(req,res)=>{
   })
 
 })
+//最愛保母
+router.get("/nanny/:mId?",(req,res)=>{
+  const sql=`SELECT service_user.id as 'id',service_user.sName as 'name',service_user.sCity as 'city',service_user.sAddr as 'addr',service_user.sDist as 'dist',service_user.sEmail as 'email',service_user.sPhone as 'phone' FROM service_like INNER JOIN service_user WHERE service_user.id=service_like.sId`
+  db.queryAsync(sql,req.params.mId).then(result=>{
+    return res.json(result)
+  })
+
+})
+
+//blog資料
+router.get("/comment", function(req, res){
+  const sql = `SELECT * FROM service_comment `;
+  
+  db.queryAsync(sql).then(result =>{
+      console.log(result)
+      return res.json(result);
+  })
+})
+//列表查詢
+router.get("/comment/:mId?", function(req, res){
+  const sql =`SELECT service_comment.sId as 'id',service_comment.commentTxt as 'txt',service_comment.rating as 'rating',service_user.sName as 'name' FROM service_comment INNER JOIN service_user WHERE service_comment.sId = service_user.id = ?`
+  console.log(req.params.mId)
+  db.queryAsync(sql, [req.params.mId]).then(result=>{return res.json(result)})
+})
 module.exports = router;
