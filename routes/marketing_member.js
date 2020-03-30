@@ -3,12 +3,14 @@ const db = require(__dirname + "/../_connect_db");
 var router = express.Router();
 
 router.post("/insert", function (req, res) {
-  const sql = `INSERT INTO \`marketing_member\`(\`mId\`,\`mName\`,\`mtId\`,\`mtName\`,\`used\`,\`timeget\`,\`endtime\`,\`verify\`, \`created_at\`, \`updated_at\`)VALUES(?,?,?,?,0,NOW(),?,?,NOW(),NOW())`
+  const sql = `INSERT INTO \`marketing_member\`(\`mId\`,\`mName\`,\`mtId\`,\`mtName\`,\`used\`,\`mtDiscountP\`,\`mtDiscount\`,\`timeget\`,\`endtime\`,\`verify\`, \`created_at\`, \`updated_at\`)VALUES(?,?,?,?,0,?,?,NOW(),?,?,NOW(),NOW())`
   db.queryAsync(sql,[
     req.body.userId,
     req.body.username,
     req.body.marketingId,
     req.body.marketingName,
+    req.body.mtDiscountP,
+    req.body.mtDiscount,
     req.body.endtime,
     req.body.verify,
 ])
