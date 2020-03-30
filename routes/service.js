@@ -28,15 +28,32 @@ router.get("/query/:page", (req, res) => {
   let totalPages; //總頁數
   let page = req.params.page ? parseInt(req.params.page) : 1;
 
-  let sql1 = `SELECT COUNT(1) AS num FROM service_user WHERE dataSts='Y' AND mId!='${req.query.notMid}'`;
-
-  //篩選條件
-  if (req.query.dataSts) {
-    sql1 += ``;
+  let sql = `SELECT COUNT(1) AS num FROM service_user WHERE dataSts='Y'`;
+  if (req.query.sCity) {
+    sql += ` AND sCity='${req.query.sCity}'`;
   }
-
-  db.queryAsync(sql1).then(r1 => {
-    if (req.query.totalPage === "Y") {
+  if (req.query.sType) {
+    sql += ` AND sTypePrice like '%${req.query.sType}%'`;
+  }
+  if (req.query.sExtra) {
+    let sExtra = req.query.sExtra.split(",");
+    if (sExtra.length) {
+      for (let i = 0; i < sExtra.length; i++) {
+        if (i === 0) {
+          sql += ` AND (FIND_IN_SET('${sExtra[i]}',sExtra)`;
+        } else {
+          sql += ` OR FIND_IN_SET('${sExtra[i]}',sExtra)`;
+        }
+      }
+      sql += ")";
+    }
+  }
+  if (req.query.sSort) {
+    let sSortSql = req.query.sSort.split("_").join(" ");
+    sql += ` ORDER BY ${sSortSql}`;
+  }
+  db.queryAsync(sql).then(r1 => {
+    if (req.query.showTotalPage === "Y") {
       return res.json(r1);
     }
     data.totalRows = totalRows = r1[0].num;
@@ -45,21 +62,44 @@ router.get("/query/:page", (req, res) => {
     data.page = page >= totalPages ? (page = totalPages) : page;
     data.page = page < 1 ? (page = 1) : page;
 
-    let sql2 = `SELECT * FROM service_user WHERE dataSts='Y' AND mId!='${req.query.notMid}'`;
-    //篩選條件
-    if (req.query.dataSts) {
-      sql2 += ``;
-    }
+    let sql = `SELECT * FROM service_user WHERE dataSts='Y'`;
 
-    sql2 += ` ORDER BY \`created_at\` DESC LIMIT ${perPage *
-      (page - 1)},${perPage}`;
-    dbQuery(sql2, res);
+    if (req.query.sCity) {
+      sql += ` AND sCity='${req.query.sCity}'`;
+    }
+    if (req.query.sType) {
+      sql += ` AND sTypePrice like '%${req.query.sType}%'`;
+    }
+    if (req.query.sExtra) {
+      let sExtra = req.query.sExtra.split(",");
+      if (sExtra.length) {
+        for (let i = 0; i < sExtra.length; i++) {
+          if (i === 0) {
+            sql += ` AND (FIND_IN_SET('${sExtra[i]}',sExtra)`;
+          } else {
+            sql += ` OR FIND_IN_SET('${sExtra[i]}',sExtra)`;
+          }
+        }
+        sql += ")";
+      }
+    }
+    if (req.query.sSort) {
+      let sSortSql = req.query.sSort.split("_").join(" ");
+      console.log(sSortSql);
+      sql += ` ORDER BY ${sSortSql}`;
+      sql += `,\`created_at\` DESC LIMIT ${perPage * (page - 1)},${perPage}`;
+    } else {
+      sql += ` ORDER BY \`created_at\` DESC LIMIT ${perPage *
+        (page - 1)},${perPage}`;
+    }
+    console.log(sql);
+    dbQuery(sql, res);
   });
 });
 // -----service_user-----
 //新增資料
 router.post("/user/insert/:userId", upload.none(), (req, res) => {
-  const sql = `INSERT INTO \`service_user\` (\`mId\`,\`sName\`, \`sPhone\`, \`sEmail\`, \`sCity\`, \`sDist\`, \`sAddr\`, \`sTitle\`, \`sYear\`, \`sInfo\`, \`sTypePrice\`, \`sSizeId\`, \`sExtra\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  const sql = `INSERT INTO \`service_user\` (\`mId\`,\`sName\`, \`sPhone\`, \`sEmail\`, \`sCity\`, \`sDist\`, \`sAddr\`, \`sTitle\`, \`sYear\`, \`sInfo\`, \`sTypePrice\`, \`sSizeId\`, \`sExtra\`, \`isConfirmed\`,\`lat\`,\`lng\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   const sqlParam = [
     req.params.userId,
     req.body.sName,
@@ -73,13 +113,16 @@ router.post("/user/insert/:userId", upload.none(), (req, res) => {
     req.body.sInfo,
     req.body.sTypePrice,
     req.body.sSizeId,
-    req.body.sExtra
+    req.body.sExtra,
+    req.body.isConfirmed,
+    req.body.lat,
+    req.body.lng
   ];
   dbQuery(sql, res, sqlParam);
 });
 //修改資料
 router.post("/user/edit/:userId", upload.none(), (req, res) => {
-  const sql = `UPDATE \`service_user\` SET \`sName\`=?, \`sPhone\`=?, \`sEmail\`=?, \`sCity\`=?, \`sDist\`=?, \`sAddr\`=?, \`sTitle\`=?, \`sYear\`=?, \`sInfo\`=?, \`sTypePrice\`=?, \`sSizeId\`=?, \`sExtra\`=?, \`updated_at\`=? WHERE \`id\`=?`;
+  const sql = `UPDATE \`service_user\` SET \`sName\`=?, \`sPhone\`=?, \`sEmail\`=?, \`sCity\`=?, \`sDist\`=?, \`sAddr\`=?, \`sTitle\`=?, \`sYear\`=?, \`sInfo\`=?, \`sTypePrice\`=?, \`sSizeId\`=?, \`sExtra\`=?,\`lat\`=?,\`lng\`=?, \`updated_at\`=? WHERE \`id\`=?`;
   const datetime = moment(Date.now())
     .tz("Asia/Taipei")
     .format("YYYY-MM-DD HH:mm:ss");
@@ -96,12 +139,24 @@ router.post("/user/edit/:userId", upload.none(), (req, res) => {
     req.body.sTypePrice,
     req.body.sSizeId,
     req.body.sExtra,
+    req.body.lat,
+    req.body.lng,
     datetime,
     req.params.userId
   ];
   dbQuery(sql, res, sqlParam);
 });
 //查詢mId/id
+router.get("/user/all", (req, res) => {
+  let sql = `SELECT * FROM service_user`;
+  if (req.query.dataSts) {
+    sql += ` WHERE dataSts='${req.query.dataSts}'`;
+    if (req.query.notMid) {
+      sql += ` AND mId!='${req.query.notMid}'`;
+    }
+  }
+  dbQuery(sql, res);
+});
 router.get("/user/:userId", (req, res) => {
   let sql = `SELECT * FROM service_user`;
   if (req.query.mId) {
@@ -114,20 +169,27 @@ router.get("/user/:userId", (req, res) => {
   }
   dbQuery(sql, res);
 });
-router.get("/user", (req, res) => {
-  let sql = `SELECT * FROM service_user`;
-  if (req.query.dataSts) {
-    sql += ` WHERE dataSts='${req.query.dataSts}'`;
-    if (req.query.notMid) {
-      sql += ` AND mId!='${req.query.notMid}'`;
-    }
-  }
-  dbQuery(sql, res);
-});
 //-----service_order 訂單-----
 //列表查詢
 router.get("/order/:userId", (req, res) => {
-  let sql = `SELECT * FROM service_order  WHERE sId='${req.params.userId}' order by created_at desc`;
+  let sql = `SELECT * FROM service_order  WHERE sId='${req.params.userId}'`;
+  if (req.query.orderStsId) {
+    sql += ` AND orderStsId=${req.query.orderStsId}`;
+  }
+  sql += " order by created_at desc";
+  console.log(sql);
+  dbQuery(sql, res);
+});
+//列表查詢
+router.get("/order/amtFinished/:userId", (req, res) => {
+  let sql = `SELECT sum(sPrice) as amt FROM service_order WHERE sId='${req.params.userId}'`;
+  console.log(sql);
+  dbQuery(sql, res);
+});
+//總金額按日期分組
+router.get("/order/amtByDate/:userId", (req, res) => {
+  let sql = `SELECT \`created_at\` as \`date\`,sum(\`sPrice\`) as \`amt\` FROM \`service_order\` WHERE \`sId\`=${req.params.userId} GROUP BY substring(\`created_at\`,1,10)`;
+  console.log(sql);
   dbQuery(sql, res);
 });
 //新增訂單
@@ -163,10 +225,16 @@ router.post("/order/insert/:userId", upload.none(), (req, res) => {
 //內頁查詢
 router.get("/orderdetail/:orderId", (req, res) => {
   let sql = `SELECT * FROM service_order  WHERE orderId='${req.params.orderId}'`;
+  if (req.query.orderStsId) {
+    sql += ` AND orderStsId=${req.query.orderStsId}`;
+  }
+  if (req.query.mId) {
+    sql += ` AND mId=${req.query.mId}`;
+  }
   dbQuery(sql, res);
 });
 //內頁修改訂單狀態
-router.post("/orderdetail/ordersts/:orderId", (req, res) => {
+router.post("/orderdetail/ordersts/:orderId", upload.none(), (req, res) => {
   let sql = `UPDATE \`service_order\` SET \`orderStsId\`=? WHERE \`orderId\`=?`;
   const sqlParam = [req.body.ordersts, req.params.orderId];
   console.log(sqlParam);
@@ -189,6 +257,17 @@ router.get("/comment/:userId", (req, res, next) => {
   }
   dbQuery(sql, res);
 });
+router.post("/comment/insert/:orderId", upload.none(), (req, res, next) => {
+  const sql = `INSERT INTO \`service_comment\` (\`orderId\`,\`mId\`,\`sId\`, \`commentTxt\`,  \`rating\`) VALUES (?,?,?,?,?)`;
+  const sqlParam = [
+    req.body.orderId,
+    req.body.mId,
+    req.body.sId,
+    req.body.commentTxt,
+    req.body.rating
+  ];
+  dbQuery(sql, res, sqlParam);
+});
 // -----service_type 服務類型-----
 router.get("/type", (req, res, next) => {
   let sql = `SELECT * FROM service_type`;
@@ -200,14 +279,22 @@ router.get("/size", (req, res, next) => {
   dbQuery(sql, res);
 });
 // -----service_photo 相片-----
-router.get("/photo/:userId", (req, res, next) => {
-  let sql = `SELECT * FROM service_photo WHERE sId='${req.params.userId}'`;
+router.get("/photo/:mId", (req, res, next) => {
+  let sql = `SELECT * FROM service_photo WHERE mId='${req.params.mId}'`;
   if (req.query.category) {
     sql += ` AND category=${req.query.category}`;
   }
   sql += " AND dataSts='Y' order by created_at desc";
   dbQuery(sql, res);
 });
+// router.get("/photo", (req, res, next) => {
+//   let sql = `SELECT * FROM service_photo WHERE sId!=''`;
+//   if (req.query.category) {
+//     sql += ` AND category=${req.query.category}`;
+//   }
+//   sql += " AND dataSts='Y' order by created_at desc";
+//   dbQuery(sql, res);
+// });
 // -----service_extra 額外服務項目-----
 router.get("/extra", (req, res, next) => {
   let sql = `SELECT * FROM service_extra`;
@@ -226,8 +313,26 @@ router.get("/zipcode/city/:city", (req, res, next) => {
 });
 //-----查會員資訊-----
 router.get("/member", (req, res, next) => {
-  let sql = `SELECT \`mId\`,\`mName\`,\`mImg\` FROM member`;
+  let sql = `SELECT \`mId\`,\`mName\`,\`mImg\`,\`mPhone\`,\`mEmail\` FROM member`;
+  if (req.query.mId) {
+    sql += ` WHERE \`mId\`=${req.query.mId}`;
+  }
+  console.log(sql);
   dbQuery(sql, res);
 });
-
+//-----收藏-----
+router.get("/like/:sId/:mId", (req, res) => {
+  let sql = `SELECT * FROM service_like  WHERE sId='${req.params.sId}' AND mId='${req.params.mId}'`;
+  dbQuery(sql, res);
+});
+router.get("/like/:action/:sId/:mId", (req, res) => {
+  let sql, sqlParam;
+  if (req.params.action === "insert") {
+    sql = `INSERT INTO \`service_like\`  (\`sId\`,\`mId\`) VALUES (?,?)`;
+  } else if (req.params.action === "del") {
+    sql = `DELETE FROM \`service_like\` WHERE \`sId\`=? AND \`mId\`=?`;
+  }
+  sqlParam = [req.params.sId, req.params.mId];
+  dbQuery(sql, res, sqlParam);
+});
 module.exports = router;

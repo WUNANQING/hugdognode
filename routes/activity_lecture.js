@@ -3,7 +3,7 @@ const db = require(__dirname + "/../_connect_db");
 var router = express.Router();
 
 router.get("/", function(req, res) {
-  const sql = "SELECT * FROM activity_lecture";
+  const sql = "SELECT * FROM activity_lecture ORDER BY LId DESC LIMIT 6";
   db.queryAsync(sql).then(result => {
     return res.json(result);
   });
