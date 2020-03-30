@@ -99,7 +99,7 @@ router.get("/query/:page", (req, res) => {
 // -----service_user-----
 //新增資料
 router.post("/user/insert/:userId", upload.none(), (req, res) => {
-  const sql = `INSERT INTO \`service_user\` (\`mId\`,\`sName\`, \`sPhone\`, \`sEmail\`, \`sCity\`, \`sDist\`, \`sAddr\`, \`sTitle\`, \`sYear\`, \`sInfo\`, \`sTypePrice\`, \`sSizeId\`, \`sExtra\`, \`isConfirmed\`,\`lat\`,\`lng\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  const sql = `INSERT INTO \`service_user\` (\`mId\`,\`sName\`, \`sPhone\`, \`sEmail\`, \`sCity\`, \`sDist\`, \`sAddr\`, \`sTitle\`, \`sYear\`, \`sInfo\`, \`sTypePrice\`, \`sSizeId\`, \`sExtra\`, \`isConfirmed\`,\`lat\`,\`lng\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   const sqlParam = [
     req.params.userId,
     req.body.sName,
@@ -177,6 +177,18 @@ router.get("/order/:userId", (req, res) => {
     sql += ` AND orderStsId=${req.query.orderStsId}`;
   }
   sql += " order by created_at desc";
+  console.log(sql);
+  dbQuery(sql, res);
+});
+//列表查詢
+router.get("/order/amtFinished/:userId", (req, res) => {
+  let sql = `SELECT sum(sPrice) as amt FROM service_order WHERE sId='${req.params.userId}'`;
+  console.log(sql);
+  dbQuery(sql, res);
+});
+//總金額按日期分組
+router.get("/order/amtByDate/:userId", (req, res) => {
+  let sql = `SELECT \`created_at\` as \`date\`,sum(\`sPrice\`) as \`amt\` FROM \`service_order\` WHERE \`sId\`=${req.params.userId} GROUP BY substring(\`created_at\`,1,10)`;
   console.log(sql);
   dbQuery(sql, res);
 });
