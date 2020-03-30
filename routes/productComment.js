@@ -7,7 +7,7 @@ router.get("/:pId", (req, res) => {
   let likes, dislikes;
   const l_sql = `SELECT COUNT(*) likes FROM product_comment WHERE rating = 1 AND pId = ?`;
   const d_sql = `SELECT COUNT(*) dislikes FROM product_comment WHERE rating = 0 AND pId = ?`;
-  const sql = `SELECT member.mAccount, member.mImg, member.mId, product_comment.rating, product_comment.comment, product_comment.updated_at FROM product_comment INNER JOIN member ON product_comment.mId = member.mId WHERE pId = ?`;
+  const sql = `SELECT member.mAccount, member.mImg, member.mId, product_comment.id, product_comment.rating, product_comment.comment, product_comment.updated_at FROM product_comment INNER JOIN member ON product_comment.mId = member.mId WHERE pId = ?`;
 
   db.queryAsync(l_sql,[req.params.pId])
     .then(result => {
@@ -40,4 +40,15 @@ router.post("/post", (req, res) => {
       console.log(err);
     });
 });
+//刪除評論
+router.post('/del/:id/:mId',(req,res)=>{
+  const sql=`DELETE FROM product_comment WHERE id = ? AND mId = ?`
+  db.queryAsync(sql,[req.params.id,req.params.mId]).then(result=>{return res.json(result)})
+
+})
+//編輯評論
+router.post('/edit/:id/:mId',(req,res)=>{
+  const sql = `UPDATE product_comment SET rating = ?, comment = ? WHERE id = ? AND mId = ?`
+  db.queryAsync(sql,[req.body.rating, req.body.content, req.params.id, req.params.mId]).then(result=>{return res.json(result)})
+})
 module.exports = router;
