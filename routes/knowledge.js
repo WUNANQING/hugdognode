@@ -148,6 +148,7 @@ router.post("/partner/open", (req, res)=>{
 router.get("/partner/plus", function(req,res){
     const sql = `SELECT * FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pid = knowledge_partners.id WHERE mid = ?`;
     const count_sql =`SELECT COUNT(pId) FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pId = knowledge_partners.id WHERE knowledge_partner_sign.mId = ?`;
+    
     db.queryAsync(sql, req.params.pJoinName).then(result => {
         return res.json(result);
       });
