@@ -5,12 +5,12 @@ var router = express.Router();
 router.get("/", async (req, res) => {
   let cond;
   let search = req.query.search;
-  console.log("search");
+  // console.log("search");
 
-  const t_sql = `SELECT * FROM activity_event WHERE eName Like "%${search}%" ORDER BY eId ASC`;
+  const t_sql = `SELECT * FROM activity_event WHERE eName Like "%${search}%" OR eCate LIKE "%${search}%" ORDER BY eId ASC`;
 
   const resData = await db.queryAsync(t_sql);
-  console.log(resData);
+  // console.log(resData);
   res.json({
     activity_event: resData
   });

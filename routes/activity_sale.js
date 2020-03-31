@@ -4,6 +4,7 @@ var router = express.Router();
 
 router.get("/", function(req, res) {
   const sql = "SELECT * FROM activity_sale ORDER BY sId DESC LIMIT 6";
+  // const sql = "SELECT * FROM activity_sale";
   db.queryAsync(sql).then(result => {
     return res.json(result);
   });
