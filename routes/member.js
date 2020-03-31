@@ -114,6 +114,21 @@ router.get("/Sorder", function(req, res){
       return res.json(result);
   })
 })
+//修改會員資料
+router.post("/Sorder/update/:orderId?", function (req, res) { 
+  console.log('req',req)
+  const sql = `UPDATE service_order SET orderStsId=? WHERE orderId = ?`
+  db.queryAsync(sql,[
+    
+    req.body.orderStsId,
+    req.params.orderId
+  ]).then(result => {
+    console.log('orderStsId' ,req.body.orderStsId)
+    console.log( 'orderId',req.params.orderId)
+    return res.json(result);
+    
+  });
+});
 //列表查詢
 router.get("/Sorder/:mId?", function(req, res){
   const sql =`SELECT * FROM service_order WHERE mId = ?`
