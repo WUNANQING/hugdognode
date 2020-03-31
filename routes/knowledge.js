@@ -6,7 +6,7 @@ var router = express.Router();
 
 //blog資料
 router.get("/blog", function(req, res){
-    const sql = `SELECT * FROM knowledge_blogs `;
+    const sql = `SELECT * FROM knowledge_blogs ORDER BY bId DESC `;
     
     db.queryAsync(sql).then(result =>{
         console.log(result)
@@ -34,6 +34,8 @@ router.get("/partner/:pId?", function(req, res){
     console.log(req.params.pId)
     db.queryAsync(sql, [req.params.pId]).then(result=>{return res.json(result)})
 })
+
+
 
 
 //question資料
@@ -65,7 +67,7 @@ router.get("/:mId?",(req,res)=>{
 })
 
 //新增問題
-router.post("/question/ask", (req, res)=>{
+router.post("/question/ask:mId?", (req, res)=>{
     const output={
         success:false,
         result:{}
@@ -93,6 +95,22 @@ router.post("/question/ask", (req, res)=>{
           return res.json(output);
       })
 });
+
+//刪除問題
+router.post("/question/del/:id", (req,res)=>{
+    const output={
+        success:false,
+        result:{}
+    }
+    
+    const sql = `DELETE FROM \`knowledge_questions\` WHERE \`id\` = ?`
+    db.queryAsync(sql, [req.params.id]).then(r => {
+        console.log(r);
+        output.success = true;
+        output.result = r.affectedRows;
+        return res.json(output);
+      });
+})
 
 //partner發起活動
 router.post("/partner/open", (req, res)=>{
@@ -126,7 +144,64 @@ router.post("/partner/open", (req, res)=>{
       })
 });
 
+//partner 其他+1
+router.get("/partner/plus", function(req,res){
+    const sql = `SELECT * FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pid = knowledge_partners.id WHERE mid = ?`;
+    db.queryAsync(sql, req.params.pJoinName).then(result => {
+        return res.json(result);
+      });
+})
+
+router.post("/partner/plus:mId?", (req, res)=>{
+    const output={
+        success:false,
+        result:{}
+      }
+
+      console.log(req.body)
+    const sql =`INSERT INTO \`knowledge_partner_sign\` ( \`pId\`, \`pJoin\`, \`mId\`, \`pJoinName\`, \`created_at\`) VALUES (?, ?, ?, ?, NOW())`;
+    db.queryAsync(sql, [
+        req.body.pId,
+        req.body.pJoin,
+        req.body.mId,
+        req.body.pJoinName, 
+      ])
+      .then(result=>{
+        //   output.success=true;
+        //   output.result=p
+          return res.json(result);
+      })
+      .catch(error=>{
+          console.log(error);
+        //   return res.json(output);
+      })
+});
 
 
+//partner 參加sql
+router.get("/partner/plus/:mId", function(req,res){
+    const sql = `SELECT * FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pId = knowledge_partners.id WHERE knowledge_partner_sign.mId = ?`;
+    db.queryAsync(sql, req.params.mId).then(result => {
+        return res.json(result);
+      });
+})
 
-module.exports = router;
+
+//partner 刪除+1
+router.post("/partner/del/:id", (req,res)=>{
+    const output={
+        success:false,
+        result:{}
+    }
+    
+    const sql = `DELETE FROM \`knowledge_partner_sign\` WHERE \`id\` = ?`
+    db.queryAsync(sql, [req.params.id]).then(r => {
+        console.log(r);
+        output.success = true;
+        output.result = r.affectedRows;
+        return res.json(output);
+      });
+})
+
+
+module.exports = router; 
