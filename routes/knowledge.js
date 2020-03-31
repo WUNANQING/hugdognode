@@ -147,6 +147,7 @@ router.post("/partner/open", (req, res)=>{
 //partner 其他+1
 router.get("/partner/plus", function(req,res){
     const sql = `SELECT * FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pid = knowledge_partners.id WHERE mid = ?`;
+    const count_sql =`SELECT COUNT(pId) FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pId = knowledge_partners.id WHERE knowledge_partner_sign.mId = ?`;
     db.queryAsync(sql, req.params.pJoinName).then(result => {
         return res.json(result);
       });
@@ -181,21 +182,23 @@ router.post("/partner/plus:mId?", (req, res)=>{
 //partner 參加sql
 router.get("/partner/plus/:mId", function(req,res){
     const sql = `SELECT * FROM knowledge_partner_sign INNER JOIN knowledge_partners ON knowledge_partner_sign.pId = knowledge_partners.id WHERE knowledge_partner_sign.mId = ?`;
+    const count_sql = 
     db.queryAsync(sql, req.params.mId).then(result => {
+        console.log(result)
         return res.json(result);
       });
 })
 
 
 //partner 刪除+1
-router.post("/partner/del/:id", (req,res)=>{
+router.post("/partner/del/:pId", (req,res)=>{
     const output={
         success:false,
         result:{}
     }
     
-    const sql = `DELETE FROM \`knowledge_partner_sign\` WHERE \`id\` = ?`
-    db.queryAsync(sql, [req.params.id]).then(r => {
+    const sql = `DELETE FROM \`knowledge_partner_sign\` WHERE \`pId\` = ?`
+    db.queryAsync(sql, [req.params.pId]).then(r => {
         console.log(r);
         output.success = true;
         output.result = r.affectedRows;
